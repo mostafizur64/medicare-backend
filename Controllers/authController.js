@@ -66,7 +66,6 @@ export const register = async (req, res) => {
     });
   }
 };
-
 export const login = async (req, res) => {
   const { email } = req.body;
   try {
@@ -97,6 +96,7 @@ export const login = async (req, res) => {
 
     // get token
     const token = generateToken(user);
+    
     const { password, role, appointments, ...rest } = user._doc;
     res.status(200).json({
       status: true,
