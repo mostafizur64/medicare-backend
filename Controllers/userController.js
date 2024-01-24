@@ -69,7 +69,7 @@ export const getAllUser = async (req, res) => {
   }
 };
 
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
   const userId = req.userId;
   try {
     const user = await User.findById(userId);
@@ -84,7 +84,7 @@ const getUserProfile = async (req, res) => {
       data: { ...rest },
     });
   } catch (err) {
-    res.status(200).json({
+    res.status(500).json({
       success: false,
       message: "Something went wrong,cannot get",
     });
@@ -93,5 +93,30 @@ const getUserProfile = async (req, res) => {
 
 export const getMyAppointMents = async (req, res) => {
   try {
-  } catch (error) {}
+    // step-1 : retrieve appointments from booking for specific user
+    const bookings = await Booking.find({ user: req.userId });
+
+    // step-2 :extract doctor ids from appointment bookings
+    const doctorsId = bookings.map((el) => el.doctor.id);
+
+    // step-3 : retrieve doctors using doctors id
+    const doctors = await Doctor.find({ _id: { $in: doctorsId } }).select(
+      "-password"
+    );
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Appointment are getting",
+        data: doctors,
+      });
+  } catch (error) {
+    res
+    .status(500)
+    .json({
+      success: false,
+      message: "Something went wrong,cannot get!",
+      data: doctors,
+    });
+  }
 };

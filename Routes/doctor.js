@@ -19,4 +19,6 @@ router.get("/", getAllDoctor);
 router.put("/:id", restrict(["doctor"]), updateDoctor);
 router.delete("/:id", restrict(["doctor"]), deleteDoctor);
 
+router.get("/profile/me",authenticate, restrict(["doctor"]), deleteDoctor);
+
 export default router;
